@@ -9,8 +9,21 @@ public class SignUpResponse {
     @SerializedName("success")
     @Expose
     private Boolean success;
+    @SerializedName("message")
+    @Expose
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @SerializedName("data")
     @Expose
+
     private UserResponse data;
 
     public Boolean getSuccess() {

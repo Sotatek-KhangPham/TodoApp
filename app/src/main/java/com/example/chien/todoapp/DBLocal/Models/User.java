@@ -32,6 +32,11 @@ public class User{
         this.Password = password;
     }
 
+    public User()
+    {
+
+    }
+
     public String getEmail() {
         return Email;
     }
