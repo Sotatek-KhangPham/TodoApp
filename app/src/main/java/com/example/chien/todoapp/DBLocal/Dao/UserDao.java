@@ -16,7 +16,7 @@ public interface UserDao {
     @Insert(onConflict = REPLACE)
     void add(User user);
 
-    @Query("SELECT * FROM User WHERE id = :userId")
+    @Query("SELECT * FROM users WHERE id = :userId")
     LiveData<User> getUser(String userId);
 
     @Delete

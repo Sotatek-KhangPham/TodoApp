@@ -1,16 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.ListTodoFragment">
+    tools:context=".View.ListTodoFragment"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#efefef"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout"
+        android:layout_alignParentBottom="true">
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addTodo"
+            android:text="Ghi chú ..."
+            android:background="#efefef"
+            android:layout_weight="5"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDelete"
+            android:text="Xoá"
+            android:layout_weight="1"
+            android:background="#efefef"/>
+
+
+
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="3dp"
-        android:id="@+id/recyclerView">
+        android:id="@+id/recyclerView"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/linearLayout"
+        >
 
     </android.support.v7.widget.RecyclerView>
 
-</FrameLayout>
+
+
+</RelativeLayout>

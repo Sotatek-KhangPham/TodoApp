@@ -5,15 +5,19 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.example.chien.todoapp.DBLocal.Dao.TodoDao;
 import com.example.chien.todoapp.DBLocal.Dao.UserDao;
+import com.example.chien.todoapp.DBLocal.Models.Todo;
 import com.example.chien.todoapp.DBLocal.Models.User;
 
-@Database(entities = {User.class}, version = 1)
+@Database(entities = {User.class, Todo.class}, version = 1)
 public abstract class TodoDatabase extends RoomDatabase {
 
     private static volatile TodoDatabase INSTANCE;
 
     public abstract UserDao userDao();
+
+    public abstract TodoDao todoDao();
 
     public static TodoDatabase getInstance(Context context) {
         if (INSTANCE == null) {
