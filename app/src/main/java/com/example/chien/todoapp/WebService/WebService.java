@@ -38,5 +38,5 @@ public interface WebService {
                                     @Field("password") String password);
 
     @GET("/todo")
-    Observable<List<TodoResponse>> getAllTodo(@Header("Authorization") String token);
+    Observable<TodoResponse> getAllTodo(@Header("Authorization") String token);
 }

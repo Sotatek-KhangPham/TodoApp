@@ -9,6 +9,9 @@ import com.example.chien.todoapp.DataResponse.TodoResponse;
 import com.example.chien.todoapp.View.ListTodoFragment;
 import com.example.chien.todoapp.WebService.WebService;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -31,8 +34,12 @@ public class TodoRepository {
     {
         service.getAllTodo(Token).subscribeOn(Schedulers.io())
            .flatMap(list-> Observable.defer(() -> Observable.fromArray(list)))
+
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::success,this::error, this::complete);
+            .subscribe(new Action1<TodoResponse>()
+            {
+
+            });
     }
 
     public LiveData<Todo> getTodo(String id)
@@ -64,7 +71,7 @@ public class TodoRepository {
     {
 
     }
-    private Todo map(TodoResponse response)
+    private Todo mapToModel(TodoResponse response)
     {
         Todo todo= new Todo();
         todo.setId(response.getId());
