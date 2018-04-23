@@ -34,5 +34,8 @@ public interface TodoDao {
 
     @Query("SELECT * FROM todo")
     LiveData<List<Todo>> getAll();
+
+    @Query("SELECT COUNT(*) FROM todo")
+    Integer getRowNumber();
 }
 

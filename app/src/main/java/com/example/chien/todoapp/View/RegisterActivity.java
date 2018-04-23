@@ -98,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void complete()
     {
         Toast.makeText(this,"Đăng ký thành công.", Toast.LENGTH_SHORT).show();
-        Intent intent =new Intent(RegisterActivity.this,Login.class);
+        Intent intent =new Intent(RegisterActivity.this,LoginActivity.class);
         intent.putExtra("Email",viewModel.getEmail());
         intent.putExtra("Password",viewModel.getPassword());
         setResult(200,intent);

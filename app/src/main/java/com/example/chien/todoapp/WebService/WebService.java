@@ -4,6 +4,7 @@ package com.example.chien.todoapp.WebService;
 
 import com.example.chien.todoapp.DBLocal.Models.Todo;
 import com.example.chien.todoapp.DBLocal.Models.User;
+import com.example.chien.todoapp.DataResponse.GetAllResponse;
 import com.example.chien.todoapp.DataResponse.LoginResponse;
 import com.example.chien.todoapp.DataResponse.SignInResponse;
 import com.example.chien.todoapp.DataResponse.SignUpResponse;
@@ -23,6 +24,7 @@ import retrofit2.http.Path;
 
 public interface WebService {
 
+
     @FormUrlEncoded
     @POST("/register")
     Observable<SignUpResponse> registration(@Field("name") String name,
@@ -37,6 +39,6 @@ public interface WebService {
     Observable<LoginResponse> login(@Field("email") String email,
                                     @Field("password") String password);
 
-    @GET("/todo")
-    Observable<TodoResponse> getAllTodo(@Header("Authorization") String token);
+    @GET("/todos")
+    Observable<GetAllResponse> getAllTodo(@Header("Authorization") String token);
 }

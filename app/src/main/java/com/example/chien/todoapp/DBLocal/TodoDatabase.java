@@ -24,8 +24,9 @@ public abstract class TodoDatabase extends RoomDatabase {
             synchronized (TodoDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            TodoDatabase.class, "Todo.db")
+                            TodoDatabase.class, "word_database")
                             .build();
+
                 }
             }
         }

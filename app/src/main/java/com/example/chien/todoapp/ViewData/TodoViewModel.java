@@ -13,14 +13,13 @@ import java.util.List;
 
 public class TodoViewModel extends AndroidViewModel {
 
-    private LiveData<List<Todo>> listTodo;
+    private MutableLiveData<List<Todo>> listTodo;
     private TodoRepository todoRepository;
     public TodoViewModel(@NonNull Application application) {
         super(application);
     }
     public void setTodoRepositor(TodoRepository todRepository)
     {
-
         this.todoRepository = todRepository;
     }
     public void initData()
@@ -30,6 +29,11 @@ public class TodoViewModel extends AndroidViewModel {
 
     public LiveData<List<Todo>> getData()
     {
+        if(listTodo == null)
+        {
+            listTodo =  new MutableLiveData<>();
+            initData();
+        }
         return  listTodo;
     }
 

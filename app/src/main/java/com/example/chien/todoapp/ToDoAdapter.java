@@ -22,17 +22,26 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.TodoViewHolder
     {
         this.handler=handler;
     }
-     public ToDoAdapter(List<Todo> list)
-     {
-          this.list= list;
+
+
+    public ToDoAdapter(){
+
      }
 
-    public void updateRecyclerView(List<Todo> list)
+     public void setList(List<Todo> listTodo)
+     {
+         this.list = listTodo;
+     }
+
+    public void updateRecyclerView(List<Todo> list1)
     {
         this.list.clear();
-        this.list = list;
+
+        this.list.addAll(list1);
         notifyDataSetChanged();
     }
+
+
     @NonNull
     @Override
     public TodoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

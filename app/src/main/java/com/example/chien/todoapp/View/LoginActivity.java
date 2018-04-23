@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.chien.todoapp.Common.Common;
 import com.example.chien.todoapp.DataResponse.LoginResponse;
 import com.example.chien.todoapp.DataResponse.SignInResponse;
 import com.example.chien.todoapp.R;
@@ -21,7 +22,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private AutoCompleteTextView txtEmail;
     private EditText edtPassword;
@@ -29,6 +30,8 @@ public class Login extends AppCompatActivity {
     Button btnSignUp;
     Disposable disposable;
     LoginViewModel viewModel;
+    boolean loginStatus = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +47,7 @@ public class Login extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Login.this,RegisterActivity.class);
+                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
                 startActivityForResult(intent, 200);
             }
         });
@@ -77,14 +80,18 @@ public class Login extends AppCompatActivity {
     }
     private void success(LoginResponse loginResponse)
     {
+        Common common = Common.getInstance();
+
         if(loginResponse.getSuccess())
         {
-            viewModel.setToken(loginResponse.getData().getAccessToken());
-            viewModel.setEmail(loginResponse.getData().getUser().getEmail());
-            Toast.makeText(this,"Đăng nhập thành công"+ viewModel.getToken(), Toast.LENGTH_SHORT).show();
+            loginStatus = true;
+            common.token = loginResponse.getData().getAccessToken();
+            common.userName = loginResponse.getData().getUser().getName();
+            Toast.makeText(this,"Đăng nhập thành công", Toast.LENGTH_SHORT).show();
         }
         else
         {
+            loginStatus = false;
             Toast.makeText(this,"Tài khoản hoặc mật khẩu không đúng", Toast.LENGTH_SHORT).show();
 
         }
@@ -96,7 +103,11 @@ public class Login extends AppCompatActivity {
     }
     private void complete()
     {
-        Intent intent=new Intent(Login.this, MainActivity.class);
-        startActivity(intent);
+        if(loginStatus)
+        {
+            Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+
     }
 }

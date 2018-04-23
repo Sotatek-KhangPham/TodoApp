@@ -1,51 +1,71 @@
 package com.example.chien.todoapp.Repositorys;
 
+import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.widget.Toast;
+import android.arch.lifecycle.MutableLiveData;
+import android.widget.MultiAutoCompleteTextView;
 
 import com.example.chien.todoapp.DBLocal.Dao.TodoDao;
 import com.example.chien.todoapp.DBLocal.Models.Todo;
+import com.example.chien.todoapp.DBLocal.TodoDatabase;
+import com.example.chien.todoapp.DataResponse.GetAllResponse;
 import com.example.chien.todoapp.DataResponse.TodoResponse;
-import com.example.chien.todoapp.View.ListTodoFragment;
 import com.example.chien.todoapp.WebService.WebService;
 
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
+import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+
 import io.reactivex.schedulers.Schedulers;
 
 public class TodoRepository {
+
     WebService service;
+    LiveData<List<Todo>> listTodo;
     TodoDao todoDao;
-    static final  String Token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhZDZlNzk2MTI5MzIxMDAxNGFlMTUxOCIsImlhdCI6MTUyNDIxMDE5MCwiZXhwIjoxNTI0ODE0OTkwfQ.ookwNhkIOvb6BgifNwRq5LWHipOZNOCqmNQG4b1ZSEA";
 
-    public TodoRepository(WebService service, TodoDao todoDao)
+    public TodoRepository(WebService service, Application application)
     {
-        this.service= service;
-        this.todoDao = todoDao;
+        TodoDatabase database = TodoDatabase.getInstance(application);
+        todoDao = database.todoDao();
+        listTodo = todoDao.getAll();
+
     }
 
-    public LiveData<List<Todo>> getAllTodo()
+
+    public LiveData<List<Todo>> getAllToDo()
     {
-        service.getAllTodo(Token).subscribeOn(Schedulers.io())
-           .flatMap(list-> Observable.defer(() -> Observable.fromArray(list)))
-
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Action1<TodoResponse>()
-            {
-
-            });
+        return listTodo;
     }
 
-    public LiveData<Todo> getTodo(String id)
+    public void insertTodo(Todo todo)
     {
-        return  todoDao.load(id);
+
+
     }
+//    public MutableLiveData<List<Todo>> getAllTodo()
+//    {
+//        service.getAllTodo(token)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(this::success, this::error,this::complete);
+//
+//        return todoDao.getAll();
+//    }
+//
+//    public MutableLiveData<List<Todo>> getAllTodo1()
+//    {
+//        service.getAllTodo(token)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(this::success1, this::error1,this::complete1);
+//
+//
+//        return data;
+//    }
+//
+//    public LiveData<Todo> getTodo(String id)
+//    {
+//        return  todoDao.load(id);
+//    }
     public void delete(Todo todo)
     {
         todoDao.delete(todo);
@@ -59,19 +79,28 @@ public class TodoRepository {
         todoDao.update(todo);
     }
 
-    private void success(List<TodoResponse> list)
-    {
-
-    }
-    private void error(Throwable throwable)
-    {
-        //throw ssssssss
-    }
-    private void complete()
-    {
-
-    }
-    private Todo mapToModel(TodoResponse response)
+//    private void success(GetAllResponse response)
+//    {
+//        for (TodoResponse responseTodo: response.getData()) {
+//            list.add(MapToModel(responseTodo));
+//        }
+//
+//    }
+//    private void error(Throwable throwable)
+//    {
+//        //throw ssssssss
+//    }
+//    private void complete()
+//    {
+//        if(todoDao.getRowNumber() == 0)
+//        {
+//            for (Todo todo:
+//                    list) {
+//                todoDao.add(todo);
+//            }
+//        }
+//    }
+    private Todo MapToModel(TodoResponse response)
     {
         Todo todo= new Todo();
         todo.setId(response.getId());
@@ -79,6 +108,10 @@ public class TodoRepository {
         todo.setTitle(response.getTitle());
         return todo;
     }
+
+
+
+
 
 
 }
