@@ -1,5 +1,6 @@
 package com.example.chien.todoapp;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,37 +16,29 @@ import com.example.chien.todoapp.DBLocal.Models.Todo;
 import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.TodoViewHolder> {
-    private List<Todo> list;
+    private List<Todo> listTodo;
     private static Handler handler;
-
+    private final LayoutInflater mInflater;
     public void setHandler(Handler handler)
     {
         this.handler=handler;
     }
 
 
-    public ToDoAdapter(){
-
+    public ToDoAdapter(Context context){
+        mInflater = LayoutInflater.from(context);
      }
 
      public void setList(List<Todo> listTodo)
      {
-         this.list = listTodo;
+         this.listTodo = listTodo;
+         notifyDataSetChanged();
      }
-
-    public void updateRecyclerView(List<Todo> list1)
-    {
-        this.list.clear();
-
-        this.list.addAll(list1);
-        notifyDataSetChanged();
-    }
-
 
     @NonNull
     @Override
     public TodoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
+        View v = mInflater
                 .inflate(R.layout.todo_item, parent, false);
 
         return new TodoViewHolder(v);
@@ -53,13 +46,23 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.TodoViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
-         Todo todo = list.get(position);
-         holder.setData(todo);
+        if(listTodo != null)
+        {
+            Todo todo = listTodo.get(position);
+            holder.setData(todo);
+        }
+        else
+        {
+            holder.txtTitle.setText("Không có dữ liệu.");
+        }
+
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if (listTodo != null)
+            return listTodo.size();
+        return 0;
     }
 
 
@@ -92,7 +95,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.TodoViewHolder
             //go to detail
             if(handler != null)
             {
-                handler.onItemClick(list.get(getAdapterPosition()));
+                handler.onItemClick(listTodo.get(getAdapterPosition()));
             }
 
         }

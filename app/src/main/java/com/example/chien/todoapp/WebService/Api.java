@@ -12,15 +12,15 @@ public class Api {
     private static Retrofit retrofit = null;
     public static WebService getClient() {
         Gson gson = new GsonBuilder().setLenient().create();
-        if (retrofit==null) {
+        if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl("https://uetcc-todo-app.herokuapp.com/")
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
-        //Creating object for our interface
+
         WebService api = retrofit.create(WebService.class);
-        return api; // return the APIInterface object
+        return api;
     }
 }

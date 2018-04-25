@@ -12,7 +12,7 @@ public class User{
 
     @NonNull
     @PrimaryKey
-    @ColumnInfo(name="id")
+    @ColumnInfo(name = "id")
     private String Id;
 
     @ColumnInfo(name = "email")
@@ -25,8 +25,9 @@ public class User{
     private String Password;
 
     @Ignore
-    public User(String name, String email, String password)
+    public User(String id, String name, String email, String password)
     {
+        this.Id = id;
         this.Name = name;
         this.Email = email;
         this.Password = password;

@@ -20,5 +20,8 @@ public interface UserDao {
     LiveData<User> getUser(String userId);
 
     @Delete
-    void delete(User user);
+    void deleteUser(User user);
+
+    @Query("DELETE FROM todo")
+    void deleteAll();
 }

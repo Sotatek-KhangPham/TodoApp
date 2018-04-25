@@ -8,34 +8,27 @@ import android.support.annotation.NonNull;
 
 import com.example.chien.todoapp.DBLocal.Models.Todo;
 import com.example.chien.todoapp.Repositorys.TodoRepository;
+import com.example.chien.todoapp.WebService.Api;
 
 import java.util.List;
 
 public class TodoViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<Todo>> listTodo;
+    private LiveData<List<Todo>> listTodo;
     private TodoRepository todoRepository;
-    public TodoViewModel(@NonNull Application application) {
+    public TodoViewModel(Application application) {
         super(application);
+        todoRepository = new TodoRepository(Api.getClient(),application);
+        listTodo = todoRepository.getAllToDo();
     }
-    public void setTodoRepositor(TodoRepository todRepository)
+    public LiveData<List<Todo>> getAllTodos()
     {
-        this.todoRepository = todRepository;
-    }
-    public void initData()
-    {
-       listTodo = todoRepository.getAllTodo();
-    }
-
-    public LiveData<List<Todo>> getData()
-    {
-        if(listTodo == null)
-        {
-            listTodo =  new MutableLiveData<>();
-            initData();
-        }
         return  listTodo;
     }
 
+    public void inserst(Todo todo)
+    {
+        todoRepository.insert(todo);
+    }
 
 }

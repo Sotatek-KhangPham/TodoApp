@@ -9,6 +9,7 @@ import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import java.security.acl.Owner;
+import java.util.Calendar;
 import java.util.Date;
 
 @Entity(foreignKeys = @ForeignKey(entity = User.class,
@@ -18,6 +19,7 @@ import java.util.Date;
 public class Todo {
     @NonNull
     @PrimaryKey
+    @ColumnInfo(name = "id")
     private String Id;
 
     @ColumnInfo(name = "title")
@@ -33,7 +35,7 @@ public class Todo {
     private String Owner;
 
     @ColumnInfo(name = "completed")
-    private Boolean completed;
+    private Boolean Completed;
 
 
 
@@ -42,6 +44,8 @@ public class Todo {
         Id = id;
         Title = title;
         Owner = owner;
+        Completed = false;
+        CreatedDate = new Date();
     }
 
     public Todo()
@@ -78,11 +82,11 @@ public class Todo {
     }
 
     public Boolean getCompleted() {
-        return completed;
+        return Completed;
     }
 
     public void setCompleted(Boolean completed) {
-        this.completed = completed;
+        this.Completed = completed;
     }
 
     public String getTitle() {

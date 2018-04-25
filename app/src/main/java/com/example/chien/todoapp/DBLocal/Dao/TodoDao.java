@@ -30,12 +30,15 @@ public interface TodoDao {
     void update(Todo todo);
 
     @Delete
-   void delete(Todo todo);
+    void delete(Todo todo);
 
     @Query("SELECT * FROM todo")
     LiveData<List<Todo>> getAll();
 
     @Query("SELECT COUNT(*) FROM todo")
     Integer getRowNumber();
+
+    @Query("DELETE FROM todo")
+    void deleteAll();
 }
 

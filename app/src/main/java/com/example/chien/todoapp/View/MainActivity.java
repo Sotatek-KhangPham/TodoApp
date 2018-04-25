@@ -37,11 +37,10 @@ public class MainActivity extends AppCompatActivity implements Handler{
     private Button btnAddTodo;
     private Button btnDelete;
     private RecyclerView recyclerView;
-    private  static TodoRepository todoRepository;
+
+    private List<Todo> listTodo;
     private ToDoAdapter adapter;
-    List<Todo> listTodo;
-    TodoDatabase database;
-    TodoViewModel todoVM;
+    private TodoViewModel todoVM;
 
 
     @Override
@@ -52,40 +51,29 @@ public class MainActivity extends AppCompatActivity implements Handler{
         configLayout();
         configRecyclerView();
         getViewModel();
-        todoRepository = new TodoRepository(Api.getClient(),database.todoDao(), Common.token);
-        creatDatabase();
-
-         btnAddTodo.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 todoVM.initData();
-             }
-         });
-
-
     }
 
 
-    private void creatDatabase()
-    {
-        new AsyncTask<Void, Void, TodoDatabase>() {
-            @Override
-            protected TodoDatabase doInBackground(Void... voids) {
-                return TodoDatabase.getInstance(getApplicationContext());
-            }
-
-            @Override
-            protected void onPostExecute(TodoDatabase database) {
-                super.onPostExecute(database);
-
-
-                todoVM.setTodoRepositor(todoRepository);
-                todoVM.initData();
-            }
-        }.execute();
-
-
-    }
+//    private void creatDatabase()
+//    {
+//        new AsyncTask<Void, Void, TodoDatabase>() {
+//            @Override
+//            protected TodoDatabase doInBackground(Void... voids) {
+//                return TodoDatabase.getInstance(getApplicationContext());
+//            }
+//
+//            @Override
+//            protected void onPostExecute(TodoDatabase database) {
+//                super.onPostExecute(database);
+//
+//
+//                todoVM.setTodoRepositor(todoRepository);
+//                todoVM.initData();
+//            }
+//        }.execute();
+//
+//
+//    }
 
     private void configLayout()
     {
@@ -97,11 +85,12 @@ public class MainActivity extends AppCompatActivity implements Handler{
 
     private void configRecyclerView()
     {
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager= new LinearLayoutManager(MainActivity.this);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new ToDoAdapter();
-        adapter.setHandler(this);
+//        recyclerView.setHasFixedSize(true);
+        adapter = new ToDoAdapter(MainActivity.this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        adapter.setHandler(MainActivity.this);
+
     }
 
 
@@ -110,13 +99,11 @@ public class MainActivity extends AppCompatActivity implements Handler{
     {
 
         todoVM = ViewModelProviders.of(MainActivity.this).get(TodoViewModel.class);
-        todoVM.getData().observe(MainActivity.this, new Observer<List<Todo>>() {
+        todoVM.getAllTodos().observe(MainActivity.this, new Observer<List<Todo>>() {
             @Override
             public void onChanged(@Nullable List<Todo> list) {
                 listTodo = list;
                 adapter.setList(list);
-                recyclerView.setAdapter(adapter);
-                adapter.updateRecyclerView(list);
             }
         });
     }
