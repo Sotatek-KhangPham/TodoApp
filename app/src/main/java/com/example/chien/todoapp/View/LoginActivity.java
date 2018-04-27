@@ -85,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         if(loginResponse.getSuccess())
         {
             loginStatus = true;
+            Api.isUserLoggedIn = true;
             common.token = loginResponse.getData().getAccessToken();
             common.userName = loginResponse.getData().getUser().getName();
             Toast.makeText(this,"Đăng nhập thành công", Toast.LENGTH_SHORT).show();

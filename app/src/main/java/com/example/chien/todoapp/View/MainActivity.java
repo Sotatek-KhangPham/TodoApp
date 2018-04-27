@@ -2,6 +2,7 @@ package com.example.chien.todoapp.View;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import com.example.chien.todoapp.ViewData.LoginViewModel;
 import com.example.chien.todoapp.ViewData.TodoViewModel;
 import com.example.chien.todoapp.WebService.Api;
 
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements Handler{
     private List<Todo> listTodo;
     private ToDoAdapter adapter;
     private TodoViewModel todoVM;
+    private String todoSelectedId;
 
 
     @Override
@@ -51,29 +54,16 @@ public class MainActivity extends AppCompatActivity implements Handler{
         configLayout();
         configRecyclerView();
         getViewModel();
+
+        btnAddTodo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NewTodoActivity.class);
+                startActivityForResult(intent, 200);
+            }
+        });
     }
 
-
-//    private void creatDatabase()
-//    {
-//        new AsyncTask<Void, Void, TodoDatabase>() {
-//            @Override
-//            protected TodoDatabase doInBackground(Void... voids) {
-//                return TodoDatabase.getInstance(getApplicationContext());
-//            }
-//
-//            @Override
-//            protected void onPostExecute(TodoDatabase database) {
-//                super.onPostExecute(database);
-//
-//
-//                todoVM.setTodoRepositor(todoRepository);
-//                todoVM.initData();
-//            }
-//        }.execute();
-//
-//
-//    }
 
     private void configLayout()
     {
@@ -85,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements Handler{
 
     private void configRecyclerView()
     {
-//        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
         adapter = new ToDoAdapter(MainActivity.this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
@@ -99,22 +89,58 @@ public class MainActivity extends AppCompatActivity implements Handler{
     {
 
         todoVM = ViewModelProviders.of(MainActivity.this).get(TodoViewModel.class);
-        todoVM.getAllTodos().observe(MainActivity.this, new Observer<List<Todo>>() {
+
+        todoVM.getData().observe(MainActivity.this, new Observer<List<Todo>>() {
             @Override
             public void onChanged(@Nullable List<Todo> list) {
                 listTodo = list;
                 adapter.setList(list);
             }
         });
+
+        todoVM.getAllTodoDB();
     }
 
     @Override
     public void onItemClick(Todo todo) {
-
+        todoSelectedId = todo.getId();
+        Intent intent = new Intent(this , EditTodoActivity.class);
+        intent.putExtra("todo_id", todo.getId());
+        intent.putExtra("todo_title", todo.getTitle());
+        startActivityForResult(intent, 201);
     }
 
     @Override
     public void onCheckChange(Boolean status) {
 
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 200 && resultCode == RESULT_OK) {
+            String title = data.getStringExtra(NewTodoActivity.KEY);
+            Todo todo = new Todo();
+            todo.setTitle(title);
+            todoVM.inserst(todo);
+            todoVM.getAllTodoDB();
+        }
+        if(requestCode == 201)
+        {
+            if(resultCode == RESULT_OK)
+            {
+                String title = data.getStringExtra(EditTodoActivity.TITLE_KEY);
+
+                todoVM.update(todoSelectedId, title);
+                todoVM.getAllTodoDB();
+
+            }
+           if(resultCode == 15)
+           {
+               todoVM.delete(todoSelectedId);
+               todoVM.getAllTodoDB();
+           }
+
+        }
     }
 }

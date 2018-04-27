@@ -2,24 +2,20 @@ package com.example.chien.todoapp.WebService;
 
 
 
-import com.example.chien.todoapp.DBLocal.Models.Todo;
-import com.example.chien.todoapp.DBLocal.Models.User;
+import com.example.chien.todoapp.DataResponse.CreateTodoResponse;
+import com.example.chien.todoapp.DataResponse.DeleteResponse;
 import com.example.chien.todoapp.DataResponse.GetAllResponse;
 import com.example.chien.todoapp.DataResponse.LoginResponse;
-import com.example.chien.todoapp.DataResponse.SignInResponse;
 import com.example.chien.todoapp.DataResponse.SignUpResponse;
-import com.example.chien.todoapp.DataResponse.TodoResponse;
 
-import java.util.List;
-
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface WebService {
@@ -39,6 +35,20 @@ public interface WebService {
     Observable<LoginResponse> login(@Field("email") String email,
                                     @Field("password") String password);
 
+
+
     @GET("/todos")
-    Observable<GetAllResponse> getAllTodo(@Header("Authorization") String token);
+    Observable<GetAllResponse> getAllTodo();
+
+
+    @FormUrlEncoded
+    @POST("/todos")
+    Observable<CreateTodoResponse> createTodo(@Field("title") String title);
+
+    @FormUrlEncoded
+    @PUT("/todos/{id}")
+    Observable<CreateTodoResponse> updateTodo(@Path("id") String todoId, @Field("title") String title);
+
+    @DELETE("/todos/{id}")
+    Observable<DeleteResponse> delete(@Path("id") String todoId);
 }

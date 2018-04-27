@@ -12,9 +12,7 @@ import java.security.acl.Owner;
 import java.util.Calendar;
 import java.util.Date;
 
-@Entity(foreignKeys = @ForeignKey(entity = User.class,
-        parentColumns = "id",
-        childColumns = "owner"),tableName = "todo")
+@Entity(tableName = "todo")
 @TypeConverters(DateConverter.class)
 public class Todo {
     @NonNull

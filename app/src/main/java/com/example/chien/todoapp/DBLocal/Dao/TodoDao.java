@@ -10,9 +10,10 @@ import android.arch.persistence.room.Update;
 
 import com.example.chien.todoapp.DBLocal.Models.DateConverter;
 import com.example.chien.todoapp.DBLocal.Models.Todo;
-import com.example.chien.todoapp.DBLocal.Models.User;
 
 import java.util.List;
+
+import io.reactivex.Flowable;
 
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
@@ -24,7 +25,7 @@ public interface TodoDao {
     void add(Todo todo);
 
     @Query("SELECT * FROM todo WHERE Id = :id")
-    LiveData<Todo> load(String id);
+    Flowable<Todo> load(String id);
 
     @Update
     void update(Todo todo);
@@ -33,12 +34,15 @@ public interface TodoDao {
     void delete(Todo todo);
 
     @Query("SELECT * FROM todo")
-    LiveData<List<Todo>> getAll();
+    Flowable<List<Todo>> getAll();
 
     @Query("SELECT COUNT(*) FROM todo")
     Integer getRowNumber();
 
     @Query("DELETE FROM todo")
     void deleteAll();
+
+    @Query("SELECT * FROM todo WHERE Id = :id")
+    Todo getByID(String id);
 }
 

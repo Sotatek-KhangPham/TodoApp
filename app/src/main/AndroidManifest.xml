@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".View.RegisterActivity" />
-        <activity android:name=".View.MainActivity"></activity>
+        <activity android:name=".View.MainActivity" />
+        <activity android:name=".View.NewTodoActivity" />
+        <activity android:name=".View.EditTodoActivity"></activity>
     </application>
 
 </manifest>
