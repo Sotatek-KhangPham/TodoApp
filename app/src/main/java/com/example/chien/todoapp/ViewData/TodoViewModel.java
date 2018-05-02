@@ -7,6 +7,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
+import com.example.chien.todoapp.Common.Common;
 import com.example.chien.todoapp.DBLocal.Models.Todo;
 import com.example.chien.todoapp.Repositorys.TodoRepository;
 import com.example.chien.todoapp.WebService.Api;
@@ -21,13 +22,15 @@ import io.reactivex.schedulers.Schedulers;
 
 public class TodoViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<Todo>> listTodo = new MutableLiveData<>();
+    private LiveData<List<Todo>> listTodo;
     private static TodoRepository todoRepository;
 
     public TodoViewModel(Application application) {
         super(application);
         todoRepository = new TodoRepository(application);
-
+        listTodo = todoRepository.getAutoUpdateFromDb(Common.id);
+        if(listTodo == null)
+            listTodo =  new MutableLiveData<>();
     }
 
     public LiveData<List<Todo>> getData()
@@ -37,12 +40,13 @@ public class TodoViewModel extends AndroidViewModel {
 
     public void getAllTodo()
     {
-        todoRepository.getAllToDo();
-        todoRepository.getTodoList()
+        todoRepository.getAllToDo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
-                   listTodo.setValue(list);
+                   MutableLiveData<List<Todo>> mutableLiveData = new MutableLiveData<>();
+                   mutableLiveData.setValue(list);
+                   listTodo = mutableLiveData;
 
                 },throwable -> {},()->{
 
@@ -51,19 +55,7 @@ public class TodoViewModel extends AndroidViewModel {
 
     }
 
-    public void getAllTodoDB()
-    {
-        todoRepository.getAutoUpdateFromDb();
-        todoRepository.getTodoList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Todo>>() {
-                    @Override
-                    public void accept(List<Todo> todos) throws Exception {
-                        listTodo.setValue(todos);
-                    }
-                });
-    }
+
     public void inserst(Todo todo)
     {
         todoRepository.createTodoServer(getApplication().getApplicationContext(),todo);
@@ -80,5 +72,9 @@ public class TodoViewModel extends AndroidViewModel {
         todoRepository.delete(getApplication().getApplicationContext(),id);
     }
 
+    public void deleteAll()
+    {
+        todoRepository.deleteAll();
+    }
 
 }

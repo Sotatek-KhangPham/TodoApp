@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -105,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
             common.token = loginResponse.getData().getAccessToken();
             common.email = loginResponse.getData().getUser().getEmail();
             common.password = edtPassword.getText().toString();
+            common.id = loginResponse.getData().getUser().getId();
             Toast.makeText(this,"Đăng nhập thành công", Toast.LENGTH_SHORT).show();
         }
         else
@@ -137,4 +139,5 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
 }

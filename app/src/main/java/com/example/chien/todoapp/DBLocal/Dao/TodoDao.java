@@ -34,7 +34,7 @@ public interface TodoDao {
     void delete(Todo todo);
 
     @Query("SELECT * FROM todo")
-    Flowable<List<Todo>> getAll();
+    LiveData<List<Todo>> getAll();
 
     @Query("SELECT COUNT(*) FROM todo")
     Integer getRowNumber();
@@ -44,5 +44,8 @@ public interface TodoDao {
 
     @Query("SELECT * FROM todo WHERE Id = :id")
     Todo getByID(String id);
+
+    @Query("SELECT * FROM todo where owner= :owner")
+    LiveData<List<Todo>> getByOwner(String owner);
 }
 

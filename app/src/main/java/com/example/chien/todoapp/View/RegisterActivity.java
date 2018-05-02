@@ -106,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
          finish();
     }
 
-    private boolean checkEmail(EditText edtEmail)
+    public  boolean checkEmail(EditText edtEmail)
     {
         String email = edtEmail.getText().toString().trim();
         if (!TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -117,7 +117,7 @@ public class RegisterActivity extends AppCompatActivity {
         return false;
 
     }
-    private boolean checkPassword(EditText edtPassword)
+    public  boolean checkPassword(EditText edtPassword)
     {
         String password=edtPassword.getText().toString().trim();
         if(password.length() < 8)
@@ -128,7 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         return  true;
     }
-    private boolean validate(EditText editText) {
+    public boolean validate(EditText editText) {
 
         if (editText.getText().toString().trim().length() > 0) {
             return true;

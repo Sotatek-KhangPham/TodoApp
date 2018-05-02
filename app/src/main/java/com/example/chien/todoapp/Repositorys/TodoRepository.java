@@ -61,14 +61,13 @@ public class TodoRepository {
 
         this.service = Api.getClient(Common.token);
 
-        listTodo = todoDao.getAll().toObservable();
 
     }
 
 
 
-    public void getAllToDo() {
-        listTodo = service.getAllTodo()
+    public Observable<List<Todo>> getAllToDo() {
+        return service.getAllTodo()
                 .flatMap(response -> {
                     return Observable.defer(() -> Observable.just(getListTodo(response)));
 
@@ -76,9 +75,9 @@ public class TodoRepository {
 
     }
 
-    public void  getAutoUpdateFromDb()
+    public LiveData<List<Todo>> getAutoUpdateFromDb(String owner)
     {
-        listTodo = todoDao.getAll().toObservable();
+     return todoDao.getByOwner(owner);
     }
 
     public Observable<List<Todo>> getTodoList()
@@ -108,6 +107,11 @@ public class TodoRepository {
              list) {
              insert(todo);
         }
+    }
+
+    public void deleteAll()
+    {
+        new DeleteAsyncTask(todoDao);
     }
 
     private static class DeleteAsyncTask extends AsyncTask<Void, Void, Void> {

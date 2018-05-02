@@ -60,17 +60,25 @@ public class MainActivity extends  AppCompatActivity implements Handler{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-       if(item.getItemId() == R.id.iLogout)
+       switch (item.getItemId())
        {
-           SharedPreferences sharedPreferences= this.getSharedPreferences("LoginInfo", Context.MODE_PRIVATE);
-           sharedPreferences.edit().clear().commit();
-           Common.token = "";
-           Common.password ="";
+           case R.id.iLogout:
+               SharedPreferences sharedPreferences= this.getSharedPreferences("LoginInfo", Context.MODE_PRIVATE);
+               sharedPreferences.edit().clear().commit();
+               Common.token = "";
+               Common.password ="";
 
-           Intent intent = new Intent(this, LoginActivity.class);
-           startActivity(intent);
+               Intent intent = new Intent(this, LoginActivity.class);
+               startActivity(intent);
+               return true;
+           case R.id.iRefresh:
+               todoVM.getAllTodo();
+               return true;
+
+               default:
+                   return super.onOptionsItemSelected(item);
        }
-        return super.onOptionsItemSelected(item);
+
 
     }
 
@@ -126,8 +134,8 @@ public class MainActivity extends  AppCompatActivity implements Handler{
                 adapter.setList(list);
             }
         });
-        todoVM.getAllTodo();
-         todoVM.getAllTodoDB();
+         todoVM.getAllTodo();
+
     }
 
     @Override
@@ -152,8 +160,8 @@ public class MainActivity extends  AppCompatActivity implements Handler{
             Todo todo = new Todo();
             todo.setTitle(title);
             todoVM.inserst(todo);
-//            todoVM.getAllTodoDB();
-            todoVM.getAllTodo();
+
+
         }
         if(requestCode == 201)
         {
@@ -162,13 +170,13 @@ public class MainActivity extends  AppCompatActivity implements Handler{
                 String title = data.getStringExtra(EditTodoActivity.TITLE_KEY);
 
                 todoVM.update(todoSelectedId, title);
-//                todoVM.getAllTodoDB();
+
 
             }
            if(resultCode == 15)
            {
                todoVM.delete(todoSelectedId);
-//               todoVM.getAllTodoDB();
+
            }
 
         }
