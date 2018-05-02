@@ -2,7 +2,9 @@ package com.example.chien.todoapp.View;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -34,7 +40,7 @@ import java.util.List;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.internal.disposables.DisposableContainer;
 
-public class MainActivity extends AppCompatActivity implements Handler{
+public class MainActivity extends  AppCompatActivity implements Handler{
 
     private Button btnAddTodo;
     private Button btnDelete;
@@ -45,6 +51,28 @@ public class MainActivity extends AppCompatActivity implements Handler{
     private TodoViewModel todoVM;
     private String todoSelectedId;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+       if(item.getItemId() == R.id.iLogout)
+       {
+           SharedPreferences sharedPreferences= this.getSharedPreferences("LoginInfo", Context.MODE_PRIVATE);
+           sharedPreferences.edit().clear().commit();
+           Common.token = "";
+           Common.password ="";
+
+           Intent intent = new Intent(this, LoginActivity.class);
+           startActivity(intent);
+       }
+        return super.onOptionsItemSelected(item);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -52,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements Handler{
         setContentView(R.layout.activity_main);
 
         configLayout();
+
         configRecyclerView();
         getViewModel();
 
@@ -97,8 +126,8 @@ public class MainActivity extends AppCompatActivity implements Handler{
                 adapter.setList(list);
             }
         });
-
-        todoVM.getAllTodoDB();
+        todoVM.getAllTodo();
+         todoVM.getAllTodoDB();
     }
 
     @Override
@@ -123,7 +152,8 @@ public class MainActivity extends AppCompatActivity implements Handler{
             Todo todo = new Todo();
             todo.setTitle(title);
             todoVM.inserst(todo);
-            todoVM.getAllTodoDB();
+//            todoVM.getAllTodoDB();
+            todoVM.getAllTodo();
         }
         if(requestCode == 201)
         {
@@ -132,13 +162,13 @@ public class MainActivity extends AppCompatActivity implements Handler{
                 String title = data.getStringExtra(EditTodoActivity.TITLE_KEY);
 
                 todoVM.update(todoSelectedId, title);
-                todoVM.getAllTodoDB();
+//                todoVM.getAllTodoDB();
 
             }
            if(resultCode == 15)
            {
                todoVM.delete(todoSelectedId);
-               todoVM.getAllTodoDB();
+//               todoVM.getAllTodoDB();
            }
 
         }

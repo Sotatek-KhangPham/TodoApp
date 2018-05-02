@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.example.chien.todoapp.DBLocal.Models.Todo;
@@ -28,6 +29,7 @@ public class TodoViewModel extends AndroidViewModel {
         todoRepository = new TodoRepository(application);
 
     }
+
     public LiveData<List<Todo>> getData()
     {
         return  listTodo;

@@ -27,7 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText txtEmail;
     private EditText edtPassword;
     private EditText edtName;
-//    ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
+
     Button btnRegister;
     Disposable disposable;
     LoginViewModel viewModel;
@@ -68,7 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
         String name = String.valueOf(edtName.getText());
         String password =String.valueOf(edtPassword.getText());
         String email= String.valueOf(txtEmail.getText());
-        disposable= Api.getClient().registration(name, email, password)
+        disposable= Api.getClient("").registration(name, email, password)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::success,this::error, this::complete);

@@ -1,7 +1,9 @@
 package com.example.chien.todoapp.View;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,15 +31,17 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSingIn;
     Button btnSignUp;
     Disposable disposable;
-    LoginViewModel viewModel;
+
     boolean loginStatus = false;
+    Common common = Common.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         configLayout();
-        viewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        checkLogin();
+
         btnSingIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +57,17 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
+    private void checkLogin()
+    {
+        SharedPreferences sharedPreferences= this.getSharedPreferences("LoginInfo", Context.MODE_PRIVATE);
+        if(sharedPreferences != null)
+        {
+            edtPassword.setText(sharedPreferences.getString("password", ""));
+            txtEmail.setText(sharedPreferences.getString("email",""));
+
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -73,21 +88,23 @@ public class LoginActivity extends AppCompatActivity {
     private void login()
     {
 
-        disposable = Api.getClient().login(txtEmail.getText().toString(),edtPassword.getText().toString())
+        SharedPreferences sharedPreferences = this.getSharedPreferences("LoginInfo", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "");
+        disposable = Api.getClient(token).login(txtEmail.getText().toString(),edtPassword.getText().toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::success,this::error, this::complete);
     }
-    private void success(LoginResponse loginResponse)
-    {
-        Common common = Common.getInstance();
+    private void success(LoginResponse loginResponse){
 
         if(loginResponse.getSuccess())
         {
             loginStatus = true;
             Api.isUserLoggedIn = true;
+
             common.token = loginResponse.getData().getAccessToken();
-            common.userName = loginResponse.getData().getUser().getName();
+            common.email = loginResponse.getData().getUser().getEmail();
+            common.password = edtPassword.getText().toString();
             Toast.makeText(this,"Đăng nhập thành công", Toast.LENGTH_SHORT).show();
         }
         else
@@ -106,6 +123,15 @@ public class LoginActivity extends AppCompatActivity {
     {
         if(loginStatus)
         {
+            SharedPreferences sharedPreferences= this.getSharedPreferences("LoginInfo", Context.MODE_PRIVATE);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            editor.putString("email", common.email);
+            editor.putString("password", common.password);
+
+            editor.apply();
+            Api.createNewRetorfit(common.token);
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         }

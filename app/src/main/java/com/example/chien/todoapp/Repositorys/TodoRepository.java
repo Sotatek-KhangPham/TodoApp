@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
 
+import com.example.chien.todoapp.Common.Common;
 import com.example.chien.todoapp.DBLocal.Dao.TodoDao;
 import com.example.chien.todoapp.DBLocal.Models.Todo;
 import com.example.chien.todoapp.DBLocal.TodoDatabase;
@@ -56,7 +58,8 @@ public class TodoRepository {
     {
         TodoDatabase database = TodoDatabase.getInstance(application);
         todoDao = database.todoDao();
-        this.service = Api.getClient();
+
+        this.service = Api.getClient(Common.token);
 
         listTodo = todoDao.getAll().toObservable();
 
