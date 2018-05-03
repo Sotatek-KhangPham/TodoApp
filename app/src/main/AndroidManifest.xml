@@ -12,16 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".View.LoginActivity">
+
+        </activity>
+        <activity android:name=".View.RegisterActivity" />]
+
+        <activity android:name=".View.MainActivity" />
+
+        <activity android:name=".View.NewTodoActivity" />
+
+        <activity android:name=".View.EditTodoActivity" />
+
+        <activity android:name=".View.SplashScreenActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.RegisterActivity" />
-        <activity android:name=".View.MainActivity" />
-        <activity android:name=".View.NewTodoActivity" />
-        <activity android:name=".View.EditTodoActivity"></activity>
     </application>
 
 </manifest>

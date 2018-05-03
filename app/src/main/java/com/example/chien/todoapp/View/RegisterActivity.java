@@ -2,7 +2,9 @@ package com.example.chien.todoapp.View;
 
 import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.chien.todoapp.Common.Common;
+import com.example.chien.todoapp.DataResponse.LoginResponse;
 import com.example.chien.todoapp.DataResponse.SignUpResponse;
 import com.example.chien.todoapp.R;
 import com.example.chien.todoapp.ViewData.LoginViewModel;
@@ -31,6 +35,9 @@ public class RegisterActivity extends AppCompatActivity {
     Button btnRegister;
     Disposable disposable;
     LoginViewModel viewModel;
+    Boolean loginStatus = false;
+    Common common = Common.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void register()
     {
 
-//        progressDialog.setCancelable(false);
-//        progressDialog.setMessage("Please Wait"); // set message
-//        progressDialog.show();
+
         String name = String.valueOf(edtName.getText());
         String password =String.valueOf(edtPassword.getText());
         String email= String.valueOf(txtEmail.getText());
@@ -83,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void success(SignUpResponse signUpResponse)
     {
-//        progressDialog.dismiss();
+
         if(signUpResponse.getSuccess())
         {
 
@@ -99,11 +104,13 @@ public class RegisterActivity extends AppCompatActivity {
     {
         Toast.makeText(this,"Đăng ký thành công.", Toast.LENGTH_SHORT).show();
         Intent intent =new Intent(RegisterActivity.this,LoginActivity.class);
-        intent.putExtra("Email",viewModel.getEmail());
-        intent.putExtra("Password",viewModel.getPassword());
-        setResult(200,intent);
-        disposable.dispose();
-         finish();
+//        intent.putExtra("Email",viewModel.getEmail());
+//        intent.putExtra("Password",viewModel.getPassword());
+//        setResult(200,intent);
+//        disposable.dispose();
+//         finish();
+        login();
+
     }
 
     public  boolean checkEmail(EditText edtEmail)
@@ -136,6 +143,61 @@ public class RegisterActivity extends AppCompatActivity {
         editText.setError("Không được để trống");
         editText.requestFocus();
         return false;
+    }
+
+    private void login()
+    {
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences("LoginInfo", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "");
+        disposable = Api.getClient(token).login(txtEmail.getText().toString(),edtPassword.getText().toString())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::success1,this::error1, this::complete1);
+    }
+    private void success1(LoginResponse loginResponse){
+
+        if(loginResponse.getSuccess())
+        {
+            loginStatus = true;
+            Api.isUserLoggedIn = true;
+
+            common.token = loginResponse.getData().getAccessToken();
+            common.email = loginResponse.getData().getUser().getEmail();
+            common.password = edtPassword.getText().toString();
+            common.id = loginResponse.getData().getUser().getId();
+
+        }
+        else
+        {
+            loginStatus = false;
+            Toast.makeText(this,"Tài khoản hoặc mật khẩu không đúng", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+    private void error1(Throwable throwable)
+    {
+        Toast.makeText(this,throwable.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+    private void complete1()
+    {
+        if(loginStatus)
+        {
+            SharedPreferences sharedPreferences= this.getSharedPreferences("LoginInfo", Context.MODE_PRIVATE);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            editor.putString("email", common.email);
+            editor.putString("password", common.password);
+            editor.putString("token", common.token);
+            editor.putString("userId", common.id);
+            editor.apply();
+            Api.createNewRetorfit(common.token);
+            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+
     }
 
 

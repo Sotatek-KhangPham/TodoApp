@@ -131,7 +131,8 @@ public class LoginActivity extends AppCompatActivity {
 
             editor.putString("email", common.email);
             editor.putString("password", common.password);
-
+            editor.putString("token", common.token);
+            editor.putString("userId", common.id);
             editor.apply();
             Api.createNewRetorfit(common.token);
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);

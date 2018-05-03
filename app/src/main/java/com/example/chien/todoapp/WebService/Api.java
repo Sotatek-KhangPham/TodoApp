@@ -22,25 +22,6 @@ public class Api {
     public static Boolean isUserLoggedIn = false;
 
 
-//    OkHttpClient httpClient = new OkHttpClient.Builder()
-//            .addInterceptor(new Interceptor() {
-//                @Override
-//                public Response intercept(Chain chain) throws IOException {
-//                    Request original = chain.request();
-//
-//                    Request request = original.newBuilder()
-//                            .header("Content-Type", "application/x-www-form-urlencoded")
-//                            .header("Authorization", "")
-//                            .method(original.method(), original.body())
-//                            .build();
-//                    if(isUserLoggedIn)
-//
-//
-//                    return chain.proceed(request);
-//                }
-//            })
-//            .build();
-
     public static  OkHttpClient getHeader(final String authorizationValue ) {
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
@@ -74,13 +55,16 @@ public class Api {
 
     public static WebService getClient(String token) {
         Gson gson = new GsonBuilder().setLenient().create();
+            if(retrofit == null)
+            {
+                retrofit = new Retrofit.Builder()
+                        .baseUrl("https://uetcc-todo-app.herokuapp.com/")
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .client(getHeader(token))
+                        .build();
+            }
 
-            retrofit = new Retrofit.Builder()
-                    .baseUrl("https://uetcc-todo-app.herokuapp.com/")
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(getHeader(token))
-                    .build();
 
 
         WebService api = retrofit.create(WebService.class);

@@ -51,7 +51,10 @@ public class Todo {
 
     }
 
-
+  public Todo(String title)
+  {
+      this.Title = title;
+  }
 
     @NonNull
     public String getId() {
